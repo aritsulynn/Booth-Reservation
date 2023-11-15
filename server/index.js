@@ -40,6 +40,15 @@ const eventSchema = new mongoose.Schema({
 const userModel = mongoose.model("authentication", userSchema);
 const eventModel = mongoose.model("event", eventSchema);
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Header",
+    "origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  next();
+});
+
 app.get("/", (req, res) => {
   res.send("hello world");
 });
