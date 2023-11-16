@@ -1,76 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Login({ setIsLoggedIn, isLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem("login") === "true"
-  );
-
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check if user is already logged in when the component mounts
-    if (isLoggedIn) {
-      navigate("/");
-    }
-  }, [isLoggedIn, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (email === "" || password === "")
+        return alert("Please fill in all fields");
       const res = await axios.post("http://localhost:5000/api/users/login", {
         email,
         password,
       });
 
-      console.log(localStorage.getItem("login"));
-      localStorage.setItem("login", "true");
-      setIsLoggedIn(true);
-      navigate("/");
+      if (res.data.success) {
+        localStorage.setItem("login", "true");
+        localStorage.setItem("email", email);
+        setIsLoggedIn(true);
+        navigate("/");
+      } else {
+        alert(res.data.message);
+      }
     } catch (error) {
-      console.error(error);
-      alert("Invalid username or password");
+      alert(error);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.setItem("login", "false");
-    setIsLoggedIn(false);
-  };
-
   return (
-    <div className="mx-auto max-w-md p-8 bg-white shadow-lg rounded-md">
+    <div className="mx-auto max-w-md p-8 bg-gradient-to-br from-neutral-900 shadow-lg rounded-md mt-20">
       <form onSubmit={handleSubmit}>
-        <label className="block mb-4">
-          <span className="text-gray-700">Username:</span>
+        <h1 className="text-white text-center text-3xl p-2">Login</h1>
+        <div className="mb-4">
+          <label className="text-white">Email:</label>
           <input
-            className="form-input mt-1 block w-full"
-            type="text"
+            className="form-input p-2 mt-1 block w-full rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+            type="email"
             value={email}
+            autoComplete="username"
             onChange={(e) => setEmail(e.target.value)}
           />
-        </label>
-        <label className="block mb-4">
-          <span className="text-gray-700">Password:</span>
+        </div>
+        <div className="mb-4">
+          <label className="text-white">Password:</label>
           <input
-            className="form-input mt-1 block w-full"
+            className="form-input p-2 mt-1 block w-full rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
             type="password"
             value={password}
+            autoComplete="current-password"
+            minLength={4}
+            maxLength={16}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </label>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          type="submit"
-        >
-          Login
-        </button>
+        </div>
+        <div className="text-center">
+          <button
+            className="rounded-md bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline-blue"
+            type="submit"
+          >
+            Login
+          </button>
+        </div>
       </form>
 
-      <p className="text-center mt-4">
+      <p className="text-center mt-4 text-white">
         Don't have an account?{" "}
         <span
           className="text-blue-500 hover:underline cursor-pointer"

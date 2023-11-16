@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 
 function Navbar({ isLoggedIn, handleLogout }) {
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-neutral-900 p-6">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-lg font-semibold">
-          <Link to="/">TAN~TAN~</Link>
+        <div className="text-white text-2xl font-semibold">
+          <Link to="/" className="text-white hover:text-blue-500">
+            Booth Management System | TAN~TAN~
+          </Link>
         </div>
         <ul className="flex space-x-4">
           <li>
@@ -19,11 +21,19 @@ function Navbar({ isLoggedIn, handleLogout }) {
           </li>
           {isLoggedIn ? (
             <>
-              <li>
-                <Link to="/event">Define Event</Link>
+              <li className="">
+                <Link
+                  to="/event"
+                  className=" text-white hover:text-gray-300 transition duration-300"
+                >
+                  Define Event
+                </Link>
               </li>
               <li>
-                <Link onClick={handleLogout} className="text-white">
+                <Link
+                  onClick={handleLogout}
+                  className=" text-white hover:text-gray-300 transition duration-300 focus:outline-none"
+                >
                   Logout
                 </Link>
               </li>
@@ -31,10 +41,20 @@ function Navbar({ isLoggedIn, handleLogout }) {
           ) : (
             <>
               <li>
-                <Link to="/login">Login</Link>
+                <Link
+                  to="/login"
+                  className="text-white hover:text-gray-300 transition duration-300"
+                >
+                  Login
+                </Link>
               </li>
               <li>
-                <Link to="/signup">Sign up</Link>
+                <Link
+                  to="/signup"
+                  className="text-white hover:text-gray-300 transition duration-300"
+                >
+                  Sign up
+                </Link>
               </li>
             </>
           )}

@@ -37,7 +37,7 @@ const eventSchema = new mongoose.Schema({
   rent_by: String,
 });
 
-const userModel = mongoose.model("authentication", userSchema);
+const BM_userModel = mongoose.model("authentication", userSchema);
 const eventModel = mongoose.model("event", eventSchema);
 
 app.use((req, res, next) => {
@@ -53,30 +53,13 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-// test เฉยๆ
-app.get("/create", async (req, res) => {
-  const exampleData = {
-    email: "test@gmail.com",
-    name: "John Doe",
-    password: "1234",
-  };
-
-  try {
-    const createdExample = await userModel.create(exampleData);
-    res.json(createdExample);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
 app.post("/api/users/register", async (req, res) => {
   const { email, name, password } = req.body;
   // check if email exists it's will not accept
-  const emailExist = await userModel.findOne({ email: email });
+  const emailExist = await BM_userModel.findOne({ email: email });
   if (emailExist)
     return res.json({ success: false, message: "Email already exists" });
-  const user = new userModel({ email, name, password });
+  const user = new BM_userModel({ email, name, password });
   user
     .save()
     .then(() => {
@@ -90,9 +73,10 @@ app.post("/api/users/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await userModel
-      .findOne({ email: email, password: password })
-      .exec();
+    const user = await BM_userModel.findOne({
+      email: email,
+      password: password,
+    }).exec();
 
     if (!user) {
       return res.status(401).json({
@@ -113,8 +97,8 @@ app.post("/api/users/login", async (req, res) => {
 
 app.get("/api/users", async (req, res) => {
   try {
-    const users = await userModel.find({}).exec();
-    return res.status(200).json({ success: true, users });
+    const BM_users = await BM_userModel.find({}).exec();
+    return res.status(200).json({ success: true, users: BM_users });
   } catch (err) {
     return res.json({ success: false, err });
   }
