@@ -25,11 +25,14 @@ const DefineEvent = ({ isLoggedIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { startDate, endDate } = eventData;
+    const { startDate, endDate, area_size } = eventData;
 
     if (new Date(endDate) < new Date(startDate)) {
-      alert("End date must be after the start date");
-      return;
+      return alert("End date must be after the start date");
+    }
+
+    if (area_size < 0) {
+      return alert("Area size must be a positive number");
     }
 
     try {
