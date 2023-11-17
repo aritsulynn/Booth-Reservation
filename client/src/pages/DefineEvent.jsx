@@ -173,7 +173,7 @@ const DefineEvent = ({ isLoggedIn }) => {
               htmlFor="area_size"
               className="block text-sm font-medium text-gray-600"
             >
-              Area Size:
+              Available Booth*:
             </label>
             <input
               type="number"
@@ -181,6 +181,7 @@ const DefineEvent = ({ isLoggedIn }) => {
               value={eventData.area_size}
               onChange={handleChange}
               className="mt-1 p-2 border rounded-md w-full"
+              required
             />
           </div>
 

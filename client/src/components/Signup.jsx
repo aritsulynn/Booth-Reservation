@@ -10,23 +10,39 @@ function SignUp({ setIsLoggedIn }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (name === "" || email === "" || password === "")
+
+    if (name === "" || email === "" || password === "") {
       return alert("Please fill in all fields");
-    const register_res = await axios
-      .post("http://localhost:5000/api/users/register", {
-        email,
-        password,
-      })
-      .then((res) => {
-        console.log(res);
-        if (res.data.success) {
-          localStorage.setItem("login", "true");
-          localStorage.setItem("email", email);
-          setIsLoggedIn(true);
-          navigate("/");
+    }
+
+    // Password validation using regular expression
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{4,12}$/;
+    if (!passwordRegex.test(password)) {
+      return alert(
+        "Password must be 4 to 12 characters long and include at least one uppercase letter, one lowercase letter, and one number."
+      );
+    }
+
+    try {
+      const register_res = await axios.post(
+        "http://localhost:5000/api/users/register",
+        {
+          email,
+          password,
         }
-      });
-    register_res;
+      );
+
+      console.log(register_res);
+
+      if (register_res.data.success) {
+        localStorage.setItem("login", "true");
+        localStorage.setItem("email", email);
+        setIsLoggedIn(true);
+        navigate("/");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
