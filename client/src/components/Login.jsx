@@ -9,25 +9,32 @@ function Login({ setIsLoggedIn, isLoggedIn }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (email === "" || password === "")
-        return alert("Please fill in all fields");
-      const res = await axios.post("http://localhost:5000/api/users/login", {
+
+    if (email === "" || password === "") {
+      return alert("Please fill in all fields");
+    }
+
+    const res = await axios
+      .post("http://localhost:5000/api/users/login", {
         email,
         password,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.data.success) {
+          localStorage.setItem("login", "true");
+          localStorage.setItem("email", email);
+          setIsLoggedIn(true);
+          navigate("/");
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        // console.log(err);
+        alert("You have entered an invalid email or password");
       });
-
-      if (res.data.success) {
-        localStorage.setItem("login", "true");
-        localStorage.setItem("email", email);
-        setIsLoggedIn(true);
-        navigate("/");
-      } else {
-        alert(res.data.message);
-      }
-    } catch (error) {
-      alert(error);
-    }
+    res;
   };
 
   return (

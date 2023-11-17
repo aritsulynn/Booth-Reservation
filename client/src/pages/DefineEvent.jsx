@@ -25,6 +25,13 @@ const DefineEvent = ({ isLoggedIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const { startDate, endDate } = eventData;
+
+    if (new Date(endDate) < new Date(startDate)) {
+      alert("End date must be after the start date");
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:5000/api/events/create",
@@ -33,7 +40,8 @@ const DefineEvent = ({ isLoggedIn }) => {
 
       if (response.status === 200 && response.data.success) {
         setEventData({
-          date: "",
+          startDate: "",
+          endDate: "",
           location: "",
           description: "",
           title: "",
@@ -63,7 +71,7 @@ const DefineEvent = ({ isLoggedIn }) => {
               htmlFor="title"
               className="block text-sm font-medium text-gray-600 "
             >
-              Title:
+              Title*:
             </label>
             <input
               type="text"
@@ -92,15 +100,32 @@ const DefineEvent = ({ isLoggedIn }) => {
 
           <div className="mb-4">
             <label
-              htmlFor="date"
+              htmlFor="startDate"
               className="block text-sm font-medium text-gray-600"
             >
-              Date:
+              Start Date*:
             </label>
             <input
               type="date"
-              name="date"
-              value={eventData.date}
+              name="startDate"
+              value={eventData.startDate}
+              onChange={handleChange}
+              required
+              className="mt-1 p-2 border rounded-md w-full"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="endDate"
+              className="block text-sm font-medium text-gray-600"
+            >
+              End Date*:
+            </label>
+            <input
+              type="date"
+              name="endDate"
+              value={eventData.endDate}
               onChange={handleChange}
               required
               className="mt-1 p-2 border rounded-md w-full"
@@ -112,7 +137,7 @@ const DefineEvent = ({ isLoggedIn }) => {
               htmlFor="location"
               className="block text-sm font-medium text-gray-600"
             >
-              Location:
+              Location*:
             </label>
             <input
               type="text"

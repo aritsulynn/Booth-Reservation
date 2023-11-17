@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema({
 // Define Mongoose Model Defined Event
 const eventSchema = new mongoose.Schema({
   eventId: Number,
-  date: Date,
+  startDate: Date,
+  endDate: Date,
   location: String,
   description: String,
   title: String,
@@ -55,18 +56,39 @@ app.get("/", (req, res) => {
 
 app.post("/api/users/register", async (req, res) => {
   const { email, name, password } = req.body;
-  // check if email exists it's will not accept
-  const emailExist = await BM_userModel.findOne({ email: email });
-  if (emailExist)
+
+  // check if email exists, it will not accept
+  const emailExist = await BM_userModel.findOne({ email: email.toLowerCase() });
+  if (emailExist) {
     return res.json({ success: false, message: "Email already exists" });
-  const user = new BM_userModel({ email, name, password });
+  }
+
+  // Define the password regex pattern
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{4,12}$/;
+
+  // Check if the password meets the criteria
+  if (!passwordRegex.test(password)) {
+    return res.json({
+      success: false,
+      message:
+        "Password must be 4 to 12 characters long and include at least one uppercase letter, one lowercase letter, and one number.",
+    });
+  }
+
+  // If the password is valid, proceed with user registration
+  const user = new BM_userModel({ email: email.toLowerCase(), name, password });
   user
     .save()
     .then(() => {
-      console.log("user created");
+      console.log("User created");
       return res.status(200).json({ success: true });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    });
 });
 
 app.post("/api/users/login", async (req, res) => {
@@ -74,7 +96,7 @@ app.post("/api/users/login", async (req, res) => {
 
   try {
     const user = await BM_userModel.findOne({
-      email: email,
+      email: email.toLowerCase(),
       password: password,
     }).exec();
 
@@ -129,11 +151,20 @@ app.post("/api/events/create", async (req, res) => {
       newEventId = 1;
     }
 
-    const { date, location, description, title, image, area_size, rent_by } =
-      req.body;
+    const {
+      startDate,
+      endDate,
+      location,
+      description,
+      title,
+      image,
+      area_size,
+      rent_by,
+    } = req.body;
     const event = new eventModel({
       eventId: newEventId,
-      date,
+      startDate,
+      endDate,
       location,
       description,
       title,
@@ -169,6 +200,23 @@ app.get("/api/events/:id", async (req, res) => {
     .exec()
     .then((event) => {
       return res.status(200).json({ success: true, event });
+    })
+    .catch((err) => {
+      return res.json({ success: false, err });
+    });
+});
+
+// remove event by id
+app.delete("/api/events/:title", async (req, res) => {
+  const { title } = req.params;
+  const event = await eventModel
+    .find({ title: title })
+    .remove()
+    .exec()
+    .then(() => {
+      if (event) {
+        return res.status(200).json({ success: true });
+      }
     })
     .catch((err) => {
       return res.json({ success: false, err });

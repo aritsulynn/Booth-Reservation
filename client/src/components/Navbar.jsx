@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Navbar({ isLoggedIn, handleLogout }) {
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleDropdownToggle = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
   return (
     <nav className="bg-neutral-900 p-6">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-2xl font-semibold">
+      <div className="container mx-auto flex flex-col md:flex-row md:justify-between items-center">
+        <div className="text-white text-2xl font-semibold mb-4 md:mb-0">
           <Link to="/" className="text-white hover:text-blue-500">
             Booth Management System | TAN~TAN~
           </Link>
         </div>
-        <ul className="flex space-x-4">
+        <ul className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center">
           <li>
             <Link
               to="/"
@@ -24,18 +30,35 @@ function Navbar({ isLoggedIn, handleLogout }) {
               <li className="">
                 <Link
                   to="/event"
-                  className=" text-white hover:text-gray-300 transition duration-300"
+                  className="text-white hover:text-gray-300 transition duration-300"
                 >
                   Define Event
                 </Link>
               </li>
               <li>
-                <Link
-                  onClick={handleLogout}
-                  className=" text-white hover:text-gray-300 transition duration-300 focus:outline-none"
-                >
-                  Logout
-                </Link>
+                <div className="relative">
+                  <p
+                    onClick={handleDropdownToggle}
+                    className="flex items-center text-white hover:text-gray-300 transition duration-300 focus:outline-none"
+                  >
+                    <p className="mr-2">{localStorage.getItem("email")}</p>
+                  </p>
+
+                  {isDropdownOpen && (
+                    <div className="absolute mt-2 bg-white rounded-md shadow-lg">
+                      <ul className="py-2">
+                        <li>
+                          <button
+                            onClick={handleLogout}
+                            className="w-full text-left px-4 py-2 hover:gray-800 bg-white text-black"
+                          >
+                            Logout
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </li>
             </>
           ) : (

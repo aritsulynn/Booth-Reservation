@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import AllEvents from "./components/AllEvents";
 import Login from "./components/login.jsx";
 import SignUp from "./components/Signup.jsx";
 import DefineEvent from "./pages/DefineEvent.jsx";
+import axios from "axios";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(

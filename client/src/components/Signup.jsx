@@ -24,8 +24,6 @@ function SignUp({ setIsLoggedIn }) {
           localStorage.setItem("email", email);
           setIsLoggedIn(true);
           navigate("/");
-        } else {
-          alert(res.data.message);
         }
       });
     register_res;
@@ -59,7 +57,7 @@ function SignUp({ setIsLoggedIn }) {
             className="form-input mt-1 block w-full rounded-md p-2"
             type="password"
             minLength={4}
-            maxLength={16}
+            maxLength={12}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
