@@ -43,7 +43,6 @@ function AllEvents({ isLoggedIn }) {
               {event.title}@{event.location}
             </h1>
             <img
-              // src="https://wallpapers-clan.com/wp-content/uploads/2022/05/cute-pfp-02.jpg"
               src={
                 event.image
                   ? event.image
